@@ -7,18 +7,11 @@ import {
   Item,
   SortableList,
   SortableListItem,
-} from "../../components/ui/sortable-list";
-import { cn } from "../../lib/utils/cn";
-import { Button } from "../../components/ui/button";
-import { DirectionAwareTabs } from "../../components/ui/direction-aware-tabs";
-import { Slider } from "../../components/ui/slider";
-
-// import { cn } from "@/lib/utils"
-// import { Button } from "@/components/ui/button"
-// import { Slider } from "@/components/ui/slider"
-// import { DirectionAwareTabs } from "@/components/ui/direction-aware-tabs"
-
-// import SortableList, { Item, SortableListItem } from "../ui/sortable-list"
+} from "@/components/ui/sortable-list";
+import { cn } from "@/lib/utils/cn";
+import { Button } from "@/components/ui/button";
+import { DirectionAwareTabs } from "@/components/ui/direction-aware-tabs";
+import { Slider } from "@/components/ui/slider";
 
 const initialState = [
   {
@@ -51,7 +44,7 @@ const initialState = [
   },
 ];
 
-export function SortableListDemo() {
+export function List() {
   const [items, setItems] = useState<Item[]>(initialState);
   const [openItemId, setOpenItemId] = useState<number | null>(null);
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
@@ -448,5 +441,3 @@ export function SortableListDemo() {
     </div>
   );
 }
-
-// export { SortableListDemo };
