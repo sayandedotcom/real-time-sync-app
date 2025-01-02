@@ -3,7 +3,7 @@
 import { ReactNode, useMemo, useState } from "react";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import useMeasure from "react-use-measure";
-import { cn } from "../../lib/utils/cn";
+import { cn } from "@/lib/utils";
 
 type Tab = {
   id: number;

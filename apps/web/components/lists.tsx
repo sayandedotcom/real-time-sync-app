@@ -3,15 +3,17 @@
 import { useCallback, useState } from "react";
 import { Plus, RepeatIcon, Settings2Icon, XIcon } from "lucide-react";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
+
+import { cn } from "@/lib/utils";
+
 import {
   Item,
   SortableList,
   SortableListItem,
-} from "@/components/ui/sortable-list";
-import { cn } from "@/lib/utils/cn";
-import { Button } from "@/components/ui/button";
-import { DirectionAwareTabs } from "@/components/ui/direction-aware-tabs";
-import { Slider } from "@/components/ui/slider";
+  Button,
+  Slider,
+  DirectionAwareTabs,
+} from "@/components/ui";
 
 const initialState = [
   {
@@ -395,7 +397,7 @@ export function List() {
 
   return (
     <div className="md:px-4 w-full max-w-full ">
-      <div className="mb-9 rounded-2xl  p-2 shadow-sm md:p-6 bg-[#151515]/50 bg-black backdrop-blur-md">
+      <div className="mb-9 rounded-2xl  p-2 shadow-sm md:p-6 dark:bg-[#151515]/50 bg-black">
         <div className=" overflow-auto p-1  md:p-4">
           <div className="flex flex-col space-y-2">
             <div className="">

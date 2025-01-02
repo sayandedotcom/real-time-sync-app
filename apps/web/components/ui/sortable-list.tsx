@@ -11,7 +11,8 @@ import {
 } from "motion/react";
 import useMeasure from "react-use-measure";
 
-import { cn } from "../../lib/utils/cn";
+import { cn } from "@/lib/utils";
+
 import { Checkbox } from "./checkbox";
 
 export type Item = {
