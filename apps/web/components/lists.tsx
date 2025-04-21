@@ -15,13 +15,16 @@ import {
   DirectionAwareTabs,
 } from "@/components/ui";
 
-const initialState = [
+const initialState: Item[] = [
   {
     text: "Gather Data",
     checked: false,
     id: 1,
     description:
       "Collect relevant marketing copy from the user's website and competitor sites to understand the current market positioning and identify potential areas for improvement.",
+    topP: 0.9,
+    temperature: 0.7,
+    maxtokens: 1000,
   },
   {
     text: "Analyze Copy",
@@ -29,6 +32,9 @@ const initialState = [
     id: 2,
     description:
       "As an AI language model, analyze the collected marketing copy for clarity, persuasiveness, and alignment with the user's brand voice and target audience. Identify strengths, weaknesses, and opportunities for optimization.",
+    topP: 0.8,
+    temperature: 0.6,
+    maxtokens: 800,
   },
   {
     text: "Create Suggestions",
@@ -36,6 +42,9 @@ const initialState = [
     id: 3,
     description:
       "Using natural language generation techniques, create alternative versions of the marketing copy that address the identified weaknesses and leverage the opportunities for improvement. Ensure the generated copy is compelling, on-brand, and optimized for the target audience.",
+    topP: 0.7,
+    temperature: 0.5,
+    maxtokens: 600,
   },
   {
     text: "Recommendations",
@@ -43,6 +52,9 @@ const initialState = [
     id: 4,
     description:
       "Present the AI-generated marketing copy suggestions to the user, along with insights on why these changes were recommended. Provide a user-friendly interface for the user to review, edit, and implement the optimized copy on their website.",
+    topP: 0.6,
+    temperature: 0.4,
+    maxtokens: 400,
   },
 ];
 
@@ -50,9 +62,9 @@ export function List() {
   const [items, setItems] = useState<Item[]>(initialState);
   const [openItemId, setOpenItemId] = useState<number | null>(null);
   const [tabChangeRerender, setTabChangeRerender] = useState<number>(1);
-  const [topP, setTopP] = useState([10]);
-  const [temp, setTemp] = useState([10]);
-  const [tokens, setTokens] = useState([10]);
+  // const [topP, setTopP] = useState([10]);
+  // const [temp, setTemp] = useState([10]);
+  // const [tokens, setTokens] = useState([10]);
 
   const handleCompleteItem = (id: number) => {
     setItems((prevItems) =>
@@ -98,6 +110,12 @@ export function List() {
     onRemoveItem: (id: number) => void
   ) => {
     const isOpen = item.id === openItemId;
+
+    function updateItemField(id: number, field: keyof Item, value: number) {
+      setItems((prevItems) =>
+        prevItems.map((i) => (i.id === id ? { ...i, [field]: value } : i))
+      );
+    }
 
     const tabs = [
       {
@@ -196,6 +214,7 @@ export function List() {
                   {item.text.slice(0, 20)} stage
                 </span>
               </p>
+              {/* Top P */}
               <div className="grid gap-4">
                 <div className="flex items-center justify-between">
                   <label className="text-xs text-neutral-400" htmlFor="top-p">
@@ -203,20 +222,33 @@ export function List() {
                   </label>
                   <div className="flex w-1/2 items-center gap-3">
                     <span className="w-12 rounded-md  bg-black/20 px-2 py-0.5 text-right text-sm text-muted-foreground">
-                      {topP}
+                      {item.topP}
                     </span>
                     <Slider
                       id="temperature"
                       max={1}
-                      defaultValue={topP}
+                      defaultValue={[item.topP]}
                       step={0.1}
-                      onValueChange={setTopP}
+                      // onValueChange={setTopP}
+                      // value={[item.topP]} // show current item’s topP
+                      // onValueChange={(e) => {
+                      //   const newTopP = e[0];
+                      //   setItems((prevItems) =>
+                      //     prevItems.map((i) =>
+                      //       i.id === item.id ? { ...i, topP: newTopP } : i
+                      //     )
+                      //   );
+                      // }}
+                      onValueChange={(e) =>
+                        updateItemField(item.id, "topP", e[0] as number)
+                      }
                       className="[&_[role=slider]]:h-8 [&_[role=slider]]:w-5 [&_[role=slider]]:rounded-md [&_[role=slider]]:border-neutral-100/10 [&_[role=slider]]:bg-neutral-900 [&_[role=slider]]:hover:border-[#13EEE3]/70 "
                       aria-label="Top P"
                     />
                   </div>
                 </div>
               </div>
+              {/* Temperature */}
               <div className="grid gap-4">
                 <div className="flex items-center justify-between">
                   <label className="text-xs text-neutral-400" htmlFor="top-p">
@@ -224,20 +256,24 @@ export function List() {
                   </label>
                   <div className="flex w-1/2 items-center gap-3">
                     <span className="w-12 rounded-md  bg-black/20 px-2 py-0.5 text-right text-sm text-muted-foreground">
-                      {temp}
+                      {item.temperature}
                     </span>
                     <Slider
                       id="top-p"
                       max={1}
-                      defaultValue={temp}
+                      defaultValue={[item.temperature]}
                       step={0.1}
-                      onValueChange={setTemp}
+                      // onValueChange={setTemp}
+                      onValueChange={(e) =>
+                        updateItemField(item.id, "temperature", e[0] as number)
+                      }
                       className="[&_[role=slider]]:h-8 [&_[role=slider]]:w-5 [&_[role=slider]]:rounded-md [&_[role=slider]]:border-neutral-100/10 [&_[role=slider]]:bg-neutral-900 [&_[role=slider]]:hover:border-[#13EEE3]/70"
                       aria-label="Temperature"
                     />
                   </div>
                 </div>
               </div>
+              {/* Max Tokens */}
               <div className="grid gap-4">
                 <div className="flex items-center justify-between">
                   <label className="text-xs text-neutral-400" htmlFor="top-p">
@@ -245,14 +281,17 @@ export function List() {
                   </label>
                   <div className="flex w-1/2 items-center gap-3">
                     <span className="w-12 rounded-md  bg-black/20 px-2 py-0.5 text-right text-sm text-muted-foreground">
-                      {tokens}
+                      {item.maxtokens}
                     </span>
                     <Slider
                       id="max_tokens"
-                      max={1}
-                      defaultValue={tokens}
-                      step={0.1}
-                      onValueChange={setTokens}
+                      max={2000}
+                      defaultValue={[item.maxtokens]}
+                      step={100}
+                      // onValueChange={setTokens}
+                      onValueChange={(e) =>
+                        updateItemField(item.id, "maxtokens", e[0] as number)
+                      }
                       className="[&_[role=slider]]:h-8 [&_[role=slider]]:w-5 [&_[role=slider]]:rounded-md [&_[role=slider]]:border-neutral-100/10 [&_[role=slider]]:bg-neutral-900 [&_[role=slider]]:hover:border-[#13EEE3]/70"
                       aria-label="Tokens"
                     />
@@ -396,50 +435,61 @@ export function List() {
   };
 
   return (
-    <div className="md:px-4 w-full max-w-full ">
-      <div className="mb-9 rounded-2xl  p-2  md:p-6 bg-[#18181b] border-[0.2px] border-slate-500 shadow-[4px_0_10px_-4px_#A8A8B2]">
-        <div className=" overflow-auto p-1  md:p-4">
-          <div className="flex flex-col space-y-2">
-            <div className="">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="256"
-                height="260"
-                preserveAspectRatio="xMidYMid"
-                viewBox="0 0 256 260"
-                className="h-6 w-6 fill-neutral-500 "
-              >
-                <path d="M239.184 106.203a64.716 64.716 0 0 0-5.576-53.103C219.452 28.459 191 15.784 163.213 21.74A65.586 65.586 0 0 0 52.096 45.22a64.716 64.716 0 0 0-43.23 31.36c-14.31 24.602-11.061 55.634 8.033 76.74a64.665 64.665 0 0 0 5.525 53.102c14.174 24.65 42.644 37.324 70.446 31.36a64.72 64.72 0 0 0 48.754 21.744c28.481.025 53.714-18.361 62.414-45.481a64.767 64.767 0 0 0 43.229-31.36c14.137-24.558 10.875-55.423-8.083-76.483Zm-97.56 136.338a48.397 48.397 0 0 1-31.105-11.255l1.535-.87 51.67-29.825a8.595 8.595 0 0 0 4.247-7.367v-72.85l21.845 12.636c.218.111.37.32.409.563v60.367c-.056 26.818-21.783 48.545-48.601 48.601Zm-104.466-44.61a48.345 48.345 0 0 1-5.781-32.589l1.534.921 51.722 29.826a8.339 8.339 0 0 0 8.441 0l63.181-36.425v25.221a.87.87 0 0 1-.358.665l-52.335 30.184c-23.257 13.398-52.97 5.431-66.404-17.803ZM23.549 85.38a48.499 48.499 0 0 1 25.58-21.333v61.39a8.288 8.288 0 0 0 4.195 7.316l62.874 36.272-21.845 12.636a.819.819 0 0 1-.767 0L41.353 151.53c-23.211-13.454-31.171-43.144-17.804-66.405v.256Zm179.466 41.695-63.08-36.63L161.73 77.86a.819.819 0 0 1 .768 0l52.233 30.184a48.6 48.6 0 0 1-7.316 87.635v-61.391a8.544 8.544 0 0 0-4.4-7.213Zm21.742-32.69-1.535-.922-51.619-30.081a8.39 8.39 0 0 0-8.492 0L99.98 99.808V74.587a.716.716 0 0 1 .307-.665l52.233-30.133a48.652 48.652 0 0 1 72.236 50.391v.205ZM88.061 139.097l-21.845-12.585a.87.87 0 0 1-.41-.614V65.685a48.652 48.652 0 0 1 79.757-37.346l-1.535.87-51.67 29.825a8.595 8.595 0 0 0-4.246 7.367l-.051 72.697Zm11.868-25.58 28.138-16.217 28.188 16.218v32.434l-28.086 16.218-28.188-16.218-.052-32.434Z" />
-              </svg>
-              <h3 className="text-neutral-200">Agent workflow</h3>
-              <a
-                className="text-xs text-white/80"
-                href="https://www.sayande.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Build by <span className="text-[#13EEE3]"> sayande.com</span>
-              </a>
-            </div>
-            <div className="flex items-center justify-between gap-4 py-2">
-              <button disabled={items?.length > 5} onClick={handleAddItem}>
-                <Plus className="dark:text-netural-100 h-5 w-5 text-neutral-500/80 hover:text-white/80" />
-              </button>
-              <div data-tip="Reset task list">
-                <button onClick={handleResetItems}>
-                  <RepeatIcon className="dark:text-netural-100 h-4 w-4 text-neutral-500/80 hover:text-white/80" />
-                </button>
+    <>
+      <div className="md:px-4 w-full max-w-full relative">
+        <div
+          className={cn(
+            "mb-9 rounded-2xl p-2 md:p-6 bg-[#212121] border-[0.2px]"
+          )}
+        >
+          <div className=" overflow-auto p-1  md:p-4">
+            <div className="flex flex-col space-y-2">
+              <div className="">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="256"
+                  height="260"
+                  preserveAspectRatio="xMidYMid"
+                  viewBox="0 0 256 260"
+                  className="h-6 w-6 fill-neutral-500 "
+                >
+                  <path d="M239.184 106.203a64.716 64.716 0 0 0-5.576-53.103C219.452 28.459 191 15.784 163.213 21.74A65.586 65.586 0 0 0 52.096 45.22a64.716 64.716 0 0 0-43.23 31.36c-14.31 24.602-11.061 55.634 8.033 76.74a64.665 64.665 0 0 0 5.525 53.102c14.174 24.65 42.644 37.324 70.446 31.36a64.72 64.72 0 0 0 48.754 21.744c28.481.025 53.714-18.361 62.414-45.481a64.767 64.767 0 0 0 43.229-31.36c14.137-24.558 10.875-55.423-8.083-76.483Zm-97.56 136.338a48.397 48.397 0 0 1-31.105-11.255l1.535-.87 51.67-29.825a8.595 8.595 0 0 0 4.247-7.367v-72.85l21.845 12.636c.218.111.37.32.409.563v60.367c-.056 26.818-21.783 48.545-48.601 48.601Zm-104.466-44.61a48.345 48.345 0 0 1-5.781-32.589l1.534.921 51.722 29.826a8.339 8.339 0 0 0 8.441 0l63.181-36.425v25.221a.87.87 0 0 1-.358.665l-52.335 30.184c-23.257 13.398-52.97 5.431-66.404-17.803ZM23.549 85.38a48.499 48.499 0 0 1 25.58-21.333v61.39a8.288 8.288 0 0 0 4.195 7.316l62.874 36.272-21.845 12.636a.819.819 0 0 1-.767 0L41.353 151.53c-23.211-13.454-31.171-43.144-17.804-66.405v.256Zm179.466 41.695-63.08-36.63L161.73 77.86a.819.819 0 0 1 .768 0l52.233 30.184a48.6 48.6 0 0 1-7.316 87.635v-61.391a8.544 8.544 0 0 0-4.4-7.213Zm21.742-32.69-1.535-.922-51.619-30.081a8.39 8.39 0 0 0-8.492 0L99.98 99.808V74.587a.716.716 0 0 1 .307-.665l52.233-30.133a48.652 48.652 0 0 1 72.236 50.391v.205ZM88.061 139.097l-21.845-12.585a.87.87 0 0 1-.41-.614V65.685a48.652 48.652 0 0 1 79.757-37.346l-1.535.87-51.67 29.825a8.595 8.595 0 0 0-4.246 7.367l-.051 72.697Zm11.868-25.58 28.138-16.217 28.188 16.218v32.434l-28.086 16.218-28.188-16.218-.052-32.434Z" />
+                </svg>
+                <h3 className="text-neutral-200">Agent workflow</h3>
+                <a
+                  className="text-xs text-white/80"
+                  href="https://www.sayande.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Build by <span className="text-[#13EEE3]"> sayande.com</span>
+                </a>
               </div>
+              <div className="flex items-center justify-between gap-4 py-2">
+                <button disabled={items?.length === 5} onClick={handleAddItem}>
+                  <Plus
+                    className={cn(
+                      "dark:text-netural-100 h-5 w-5 text-neutral-500/80",
+                      items?.length === 5 ? "" : "hover:text-white/80"
+                    )}
+                  />
+                </button>
+                <div data-tip="Reset task list">
+                  <button onClick={handleResetItems}>
+                    <RepeatIcon className="dark:text-netural-100 h-4 w-4 text-neutral-500/80 hover:text-white/80" />
+                  </button>
+                </div>
+              </div>
+              <SortableList
+                items={items}
+                setItems={setItems}
+                onCompleteItem={handleCompleteItem}
+                renderItem={renderListItem}
+              />
             </div>
-            <SortableList
-              items={items}
-              setItems={setItems}
-              onCompleteItem={handleCompleteItem}
-              renderItem={renderListItem}
-            />
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

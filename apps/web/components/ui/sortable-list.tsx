@@ -20,6 +20,9 @@ export type Item = {
   checked: boolean;
   id: number;
   description: string;
+  topP: number;
+  temperature: number;
+  maxtokens: number;
 };
 
 interface SortableListItemProps {
@@ -56,6 +59,8 @@ function SortableListItem({
 
   const handleDragEnd = () => {
     setIsDragging(false);
+    console.log("1 drag transition end");
+    console.log(item);
   };
 
   return (
@@ -65,7 +70,7 @@ function SortableListItem({
           value={item}
           className={cn(
             "relative z-auto grow",
-            "h-full rounded-xl bg-[#161716]/80",
+            "h-full rounded-xl bg-[#303030]",
             "shadow-[0px_1px_0px_0px_hsla(0,0%,100%,.03)_inset,0px_0px_0px_1px_hsla(0,0%,100%,.03)_inset,0px_0px_0px_1px_rgba(0,0,0,.1),0px_2px_2px_0px_rgba(0,0,0,.1),0px_4px_4px_0px_rgba(0,0,0,.1),0px_8px_8px_0px_rgba(0,0,0,.1)]",
             item.checked ? "cursor-not-allowed" : "cursor-grab",
             item.checked && !isDragging ? "w-7/10" : "w-full"
@@ -109,6 +114,9 @@ function SortableListItem({
                 }
           }
           whileDrag={{ zIndex: 9999 }}
+          onDragTransitionEnd={() => {
+            console.log("drag transition end");
+          }}
         >
           <div ref={ref} className={cn(isExpanded ? "" : "", "z-20 ")}>
             <motion.div
@@ -263,6 +271,7 @@ function SortableList({
   renderItem,
 }: SortableListProps) {
   if (items) {
+    console.log(items);
     return (
       <LayoutGroup>
         <Reorder.Group
