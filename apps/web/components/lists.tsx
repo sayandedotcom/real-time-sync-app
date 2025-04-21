@@ -40,7 +40,7 @@ const initialState = [
   {
     text: "Recommendations",
     checked: false,
-    id: 5,
+    id: 4,
     description:
       "Present the AI-generated marketing copy suggestions to the user, along with insights on why these changes were recommended. Provide a user-friendly interface for the user to review, edit, and implement the optimized copy on their website.",
   },
@@ -397,7 +397,7 @@ export function List() {
 
   return (
     <div className="md:px-4 w-full max-w-full ">
-      <div className="mb-9 rounded-2xl  p-2  md:p-6 bg-[#151515] border-r-[1px] border-slate-300 shadow-[4px_0_10px_-4px_#A8A8B2]">
+      <div className="mb-9 rounded-2xl  p-2  md:p-6 bg-[#18181b] border-[0.2px] border-slate-500 shadow-[4px_0_10px_-4px_#A8A8B2]">
         <div className=" overflow-auto p-1  md:p-4">
           <div className="flex flex-col space-y-2">
             <div className="">
